@@ -1,6 +1,7 @@
 from infer_goal import *
 import utils
 import numpy as np
+from pprint import pprint
 
 class Game:
     def __init__(self):
@@ -60,8 +61,17 @@ class Game:
                 text_rect = text.get_rect(center=(self.screen.get_width() / 2, self.screen.get_height() * 0.2))
                 self.screen.blit(text, text_rect)
 
-            self.npc.replan(self.player, self.screen)
-            
+            # self.npc.replan(self.player, self.screen)
+            obstacles = [[[obstacle.rect.x, obstacle.rect.y], [obstacle.rect.width, obstacle.rect.height]] for obstacle in self.obstacles]
+            points = sample_path(self.player.pos, obstacles, self.screen)
+            # points is a dictionary with keys as tuples and values as lists of tuples
+            # plot lines between keys and values
+            for key, values in points.items():
+                key = (int(key[0] * self.screen.get_width()), int((key[1]) * self.screen.get_height()))
+                for value in values:
+                    value = (int(value[0] * self.screen.get_width()), int((value[1]) * self.screen.get_height()))
+                    pygame.draw.line(self.screen, "red", key, value, 2)
+
             # Update display and tick
             pygame.display.flip()
             self.clock.tick(60)
