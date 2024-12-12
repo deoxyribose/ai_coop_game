@@ -1,4 +1,4 @@
-from infer_goal import *
+from infer_goal_3 import *
 import utils
 import numpy as np
 from pprint import pprint
@@ -9,8 +9,9 @@ class Game:
         self.screen = pygame.display.set_mode((800, 600))
         self.clock = pygame.time.Clock()
         self.obstacles = [
-            Obstacle(300, 300, 100, 50),
-            Obstacle(500, 150, 150, 60),
+            Obstacle(300, 300, 100, 70),
+            Obstacle(500, 250, 150, 60),
+            Obstacle(200, 150, 450, 60),
         ]
         goal_1 = Goal(700, 500, self.screen)
         goal_2 = Goal(100, 500, self.screen)
@@ -30,6 +31,7 @@ class Game:
     def run(self):
         # Main game loop
         running = True
+        rng_key = random.PRNGKey(0)
         while running:
             self.screen.fill("white")
             
@@ -63,7 +65,8 @@ class Game:
 
             # self.npc.replan(self.player, self.screen)
             obstacles = [[[obstacle.rect.x, obstacle.rect.y], [obstacle.rect.width, obstacle.rect.height]] for obstacle in self.obstacles]
-            points = sample_path(self.player.pos, obstacles, self.screen)
+            points, rng_key = sample_path(self.player.pos, self.goals[0].pos, obstacles, self.screen, rng_key = rng_key)
+            # points, rng_key = sample_path(self.player.pos, obstacles, self.screen, rng_key = random.PRNGKey(0))
             # points is a dictionary with keys as tuples and values as lists of tuples
             # plot lines between keys and values
             for key, values in points.items():
